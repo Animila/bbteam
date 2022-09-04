@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Status extends Model
+{
+    use HasFactory;
+    protected $guarded = false;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function mangas()
+    {
+        return $this->hasMany(\App\Models\Manga::class, 'id_status', 'id');
+    }
+}
