@@ -16,34 +16,49 @@
         </style>
     </head>
     <body class="antialiased">
-    Английский: {{$manga->title_eng}} <br>
-    Русский:  {{$manga->title_ru}} <br>
-    Корейский: {{$manga->title_korean}} <br>
-    Описание: {{$manga->text}}<br>
-    18+: {{$manga->censor}}<br>
-    Статус: {{$manga->status->title}}<br>
-    Тип: {{$manga->type->title}}<br>
+
+    @auth()
+        Авторизован
+        <a href="{{route('logout')}}">Выйти</a>
+    @else
+        <a href="{{route('login')}}">Логин</a>
+        <a href="{{route('register')}}">Регистрация</a>
+    @endauth
     <br>
-    теги:
+    <br>
+    @auth()
+        Английский: {{$manga->title_eng}} <br>
+        Русский:  {{$manga->title_ru}} <br>
+        Корейский: {{$manga->title_korean}} <br>
+        Описание: {{$manga->text}}<br>
+        18+: {{$manga->censor}}<br>
+        Статус: {{$manga->status->title}}<br>
+        Тип: {{$manga->type->title}}<br>
+        <br>
+        теги:
         @foreach($manga->tags as $tag)
             {{$tag->title}}
         @endforeach
-    <br>
-    жанры:
-    @foreach($manga->genres as $tag)
-        {{$tag->title}}
-    @endforeach
-    <br>
-    Главы: <br>
-    @foreach($manga->chapters as $chapter)
-        {{$chapter->title}}<br>
-        @foreach($chapter->scans as $scan)
-            <img src="{{$scan->url}}" alt="" style="max-width: 20%">
+        <br>
+        жанры:
+        @foreach($manga->genres as $tag)
+            {{$tag->title}}
         @endforeach
         <br>
-        <hr>
+        Главы: <br>
+        @foreach($manga->chapters as $chapter)
+            {{$chapter->title}}<br>
+            @foreach($chapter->scans as $scan)
+                <img src="{{$scan->url}}" alt="" style="max-width: 20%">
+            @endforeach
+            <br>
+            <hr>
+            <br>
+        @endforeach
         <br>
-    @endforeach
-    <br>
+    @else
+        АВТОРИЗУЙТЕСЬ
+    @endauth
+
     </body>
 </html>
