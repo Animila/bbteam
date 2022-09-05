@@ -5,6 +5,7 @@ use App\Http\Controllers\Account\RegisterController;
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\GetController;
 use App\Http\Controllers\MangaShowScans;
+use App\Http\Controllers\VkDonut;
 use App\Models\SocialAccount;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -36,7 +37,7 @@ Route::get('/logout', function ()
 )->name('logout')->middleware('auth');
 
 
-Route::get('/social-auth/{provider}', function ($provider) {return Socialite::driver($provider)->redirect();})->name('auth.social');
+Route::get('/social-auth/{provider}', function ($provider) {return Socialite::driver($provider)->scopes(['groups'])->redirect();})->name('auth.social');
 Route::get('/social-auth/{provider}/callback', SocialController::class)->name('auth.social.callback');
 Route::get('/social/delete', function ()
 {
@@ -44,9 +45,10 @@ Route::get('/social/delete', function ()
     return back();
 }
 )->name('auth.delete');
+Route::get('/premium/VkDonut', VkDonut::class)->name('premium.DONUT');
+Route::get('/premium/VkDonut/unpin', function (){\auth()->user()->update(['premium'=>0]);return back();})->name('premium.UNDONUT');
 
-
-Route::get('/account', function () {return 'защищенный сектор';})->name('account.index')->middleware('auth');
+Route::get('/account', function () {return view('account.index');})->name('account.index')->middleware('auth');
 Route::get('/manga/{title_eng}/{chapter}', MangaShowScans::class)->name('manga.show.scans')->middleware('auth');
 Route::get('/admin', function ()
 {

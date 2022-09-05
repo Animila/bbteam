@@ -18,16 +18,16 @@
     <body class="antialiased">
 
     @auth()
-        Авторизован
-        <a href="{{route('logout')}}">Выйти</a>
+        <a href="{{route('account.index')}}">Аккаунт</a> <br>
+        <a href="{{route('logout')}}">Выйти</a><br>
         @if(! \App\Models\SocialAccount::where('user_id', auth()->id())->first())
-            <a href="{{route('auth.social', 'vkontakte')}}">Авторизация по вк</a>
+            <a href="{{route('auth.social', 'vkontakte')}}">Авторизация по вк</a><br>
         @else
-            <a href="{{route('auth.delete')}}">Отвязать</a>
+            <a href="{{route('auth.delete')}}">Отвязать</a><br>
         @endif
     @else
-        <a href="{{route('login')}}">Логин</a>
-        <a href="{{route('register')}}">Регистрация</a>
+        <a href="{{route('login')}}">Логин</a><br>
+        <a href="{{route('register')}}">Регистрация</a><br>
     @endauth
 
 
