@@ -20,6 +20,11 @@
     @auth()
         Авторизован
         <a href="{{route('logout')}}">Выйти</a>
+        @if(! \App\Models\SocialAccount::where('user_id', auth()->id())->first())
+            <a href="{{route('auth.social', 'vkontakte')}}">Авторизация по вк</a>
+        @else
+            <a href="{{route('auth.delete')}}">Отвязать</a>
+        @endif
     @else
         <a href="{{route('login')}}">Логин</a>
         <a href="{{route('register')}}">Регистрация</a>
