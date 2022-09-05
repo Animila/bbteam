@@ -29,9 +29,10 @@
         <a href="{{route('login')}}">Логин</a>
         <a href="{{route('register')}}">Регистрация</a>
     @endauth
+
+
     <br>
     <br>
-    @auth()
         Английский: {{$manga->title_eng}} <br>
         Русский:  {{$manga->title_ru}} <br>
         Корейский: {{$manga->title_korean}} <br>
@@ -50,20 +51,15 @@
             {{$tag->title}}
         @endforeach
         <br>
+
         Главы: <br>
         @foreach($manga->chapters as $chapter)
             {{$chapter->title}}<br>
-            @foreach($chapter->scans as $scan)
-                <img src="{{$scan->url}}" alt="" style="max-width: 20%">
-            @endforeach
+                <a href="{{route('manga.show.scans', [str_replace(' ', '_', $manga->title_eng), $chapter])}}">Посмотреть</a>
             <br>
             <hr>
             <br>
         @endforeach
         <br>
-    @else
-        АВТОРИЗУЙТЕСЬ
-    @endauth
-
     </body>
 </html>

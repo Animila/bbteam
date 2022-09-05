@@ -4,8 +4,10 @@ use App\Http\Controllers\Account\LoginController;
 use App\Http\Controllers\Account\RegisterController;
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\GetController;
+use App\Http\Controllers\MangaShowScans;
 use App\Models\SocialAccount;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -45,4 +47,14 @@ Route::get('/social/delete', function ()
 
 
 Route::get('/account', function () {return 'защищенный сектор';})->name('account.index')->middleware('auth');
+Route::get('/manga/{title_eng}/{chapter}', MangaShowScans::class)->name('manga.show.scans')->middleware('auth');
+Route::get('/admin', function ()
+{
+    if (Gate::check('for_admin_user')){
+        return 'админ';
+    } else {
+        return 'нельзя';
+    }
+}
+)->name('admin')->middleware('auth');
 

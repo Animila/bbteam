@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\User;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -25,6 +27,14 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::before(function (?User $user) {
+                return $user && $user->role == 'admin';
+            }
+        );
+
+        //проверка на премиум доступ
+        Gate::define('for_premium_user', function (?User $user) {
+            return $user && $user->premium;
+        });
     }
 }
