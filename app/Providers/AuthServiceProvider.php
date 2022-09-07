@@ -33,7 +33,9 @@ class AuthServiceProvider extends ServiceProvider
                 }
             }
         );
-
+        Gate::define('for_admin_user', function (?User $user) {
+            return $user && $user->role == 'admin';
+        });
         //проверка на премиум доступ
         Gate::define('for_premium_user', function (?User $user) {
             return $user && $user->premium;
