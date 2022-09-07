@@ -20,10 +20,9 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials, $yes)) {
             $request->session()->regenerate();
-
             return redirect('/');
         } else {
-            dd('ошибка');
+            return back();
         }
     }
 }
