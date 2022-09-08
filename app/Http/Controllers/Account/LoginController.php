@@ -20,9 +20,14 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials, $yes)) {
             $request->session()->regenerate();
-            return redirect('/');
+            return [
+                'status'=>True,
+            ];
         } else {
-            return back();
+            return [
+                'status'=>False,
+                'error'=>'Ошибка авторизации. Проверьте логин или пароль'
+            ];
         }
     }
 }
