@@ -1,64 +1,139 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Документация
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 1. Статусы пользователей
+###Гость (guest)
+Не имеет никаких привилегий на сайте, разрешен доступ только к главной странице, авторизации, регистрации, каталогу, новым проектам, информации о тайтле 
+###Пользователь (auth)
+Имеет доступ к личному кабинету, просмотр бесплатных глав, оставлять лайки, комментарии, закладки.
 
-## About Laravel
+Доступные поля:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+| Название          |     Поле     | Тип ответа |             Тип |
+|-------------------|:------------:|-----------:|----------------:|
+| Никнейм           | **nickname** |     string |    обязательное |
+| Имя               |   **name**   |     string |    обязательное |
+| Почта             |  **email**   |     string |    обязательное |
+| Пароль            | **password** |     string | Необязательное* |
+| Пол               |  **gender**  |     string |    обязательное |
+| О себе            |  **about**   |       text |  Необязательное |
+| Сокрытие 18+      | **hide_18**  |    integer |  Необязательное |
+| Доступ к премиуму | **premium**  |    integer |    обязательное |
+| Статус            |   **role**   |     string |    обязательное |
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+> *При авторизации с помощью соц сетей поле пароля не обязательное, но при авторизации может выскочить ошибка (исправить!). ОБЯЗАТЕЛЬНО ХЭШИРОВАТЬ ПРИ ПРОВЕРКЕ ИЛИ ИЗМЕНЕНИИ
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+###Премиум-пользователь (premium)
+Имеет доступ к премиум главам.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**Как узнать статус?**
+1. ```auth()->user()->premium ``` - вернет 0 или 1
+2. ```Gate:check(‘for_premium_user’)``` вернет false или true
+###Администратор (admin)
+**Как узнать статус?**
+1. ```auth()->user()->role``` - вернет ‘user’ или ‘admin’
+2. ```Gate:check(‘for_admin_user’)``` - вернет false или true
 
-## Laravel Sponsors
+## Работа API
+> ВНИМАНИЕ! ДЛЯ РАБОТЫ С НЕКОТОРЫМИ ФУНКЦИЯМИ ТРЕБУЕТСЯ АВТОРИЗАЦИЯ
+>
+> [см. Аутентификация по API](filename.md#authApi)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
 
-### Premium Partners
+Пример работы с API:
+### ```http://bbteam.ru/api/getMangas?search=1&tags[]=1&tags[]=2```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+###Список методов 
+| Название                     |         Вызов         | Auth()? |                                                        Аргументы |
+|------------------------------|:---------------------:|--------:|-----------------------------------------------------------------:|
+| **ТАЙТЛЫ**                   |
+| Список тайтлов               |     **getMangas**     |       - |                                                                - |
+| Список тайтлов с фильтрацией | **getMangas.filters** |       - | search, types[], <br/>status[], censor[],<br/> tags[], genres[]  |
+| Информация о тайтле          |     **getManga**      |       - |                                                            manga |
+| Список глав в тайтле         |  **getListChapters**  |       - |                                                            manga |
+| Отобразить главу             |    **getChapter**     | premium |                                                          chapter |
+| **ТЕГИ**                     |
+| Отобразить список тегов      |      **getTags**      |       - |                                                                - |
+| Создать новый тег            |     **setNewTag**     |   admin |                                                            title |
+| Изменить тег                 |      **setTag**       |   admin |                                                        id, title |
+| **ЖАНРЫ**                    |
+| Отобразить список жанров     |     **getGenres**     |       - |                                                                - |
+| Создать новый жанр           |     **setNewTag**     |   admin |                                                            title |
+| Изменить жанр                |      **setTag**       |   admin |                                                        id, title |
 
-## Contributing
+## - ```getMangas```
+####Описание:
+Возвращает список всех тайтлов.
+####Аргументы :
+- отсуствуют
+#### JSON ответ:
+Возыращает массив с данными тайтлов. См. [```getManga```]():
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## - ```getMangas.filters```
+####Описание:
+Возвращает список всех тайтлов.
+####Аргументы :
+- ```search``` - поиск по заголовкам и описанию
+- ```types[]``` - тип тайтла
+- ```status[]``` - статус перевода
+- ```censor[]``` - список тайтлов по ограничению:
+- ```tags[]``` - список тайтлов по тегам
+- ```genres[]``` - список тайтлов по жанрам
+#### JSON ответ:
+Возыращает массив с данными тайтлов. См. [```getManga```]():
 
-## Code of Conduct
+## - ```getManga```
+####Описание:
+Возвращает информацию о текущем тайтле
+####Аргументы :
+```manga``` - идентификатор тайтла
+#### JSON ответ:
+| Ключ                 |   Тип   |       Статус |            Описание |
+|----------------------|:-------:|-------------:|--------------------:|
+| ```[id]```           | integer |   обязателен |           ID тайтла |
+| ```[title_eng]```    | string  |   обязателен | Английское название |
+| ```[title_ru]```     | string  |   обязателен |    Русское название |
+| ```[title_korean]``` | string  | необязателен |  Корейское название |
+| ```[text]```         |  text   |   обязателен |     Описание тайтла |
+| ```[censor]```       | boolean |   обязателен |  Возрастной рейтинг |
+| ```[type]```         | string  |   обязателен |           Тип манги |
+| ```[status]```       | string  |   обязателен |     Статус перевода |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## - ```getListChapters```
+####Описание:
+Возвращает список глав тайтла
+####Аргументы :
+manga - идентификатор тайтла
+#### JSON ответ:
+| Ключ            |   Тип   |       Статус |       Описание |
+|-----------------|:-------:|-------------:|---------------:|
+| ```[id]```      | integer |   обязателен |       ID главы |
+| ```[tom]```     | integer |   обязателен |     Номер тома |
+| ```[number]```  | integer |   обязателен |    Номер главы |
+| ```[title]```   | string  | необязателен | Название главы |
+| ```[premium]``` | boolean |   обязателен |    Доступность |
 
-## Security Vulnerabilities
+## - ```getChapter```
+####Описание:
+Возвращает список сканов
+####Аргументы :
+chapter - айди главы
+#### JSON ответ:
+| Ключ            |   Тип   |       Статус |               Описание |
+|-----------------|:-------:|-------------:|-----------------------:|
+| ```[id]```      | integer |   обязателен |             Айди главы |
+| ```[url]```     | string  |   обязателен |  Ссылка на изображение |
+| ```[number]```  | integer |   обязателен | Порядковый номер скана |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### <a id="authApi" />Аутентификация по API
+Для обеспечения работоспособности некоторых функций, API потребуется данные о пользователе, который отправляет запрос. Поэтому наш сервис использует технологию [Sanctum](https://laravel.com/docs/8.x/sanctum#authorizing-private-broadcast-channels), которая сохраняет уникальный ключ авторизации в куках сайта. Поэтому для работы вне сайта, требуется знать как подключаться к API.
 
-## License
+**Инструкция для авторизации**
+1. Посылаем запрос в [/sanctum/csrf-cookie]() для получения нового CSRF-токена
+2. Авторизуемся [/auth?email={почта}&password={пароль}]() ((опционально) для сохранения сессии - [remember=true]())
+   1. Параметры: _email_, _password_ 
+   2. Header: _X-XSRF-TOKEN_
+3. И для последующих запросов ОБЯЗАТЕЛЬНО добавляем в Header ключ Referer со значением имени домена из конфигуратора config/sanctum
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
