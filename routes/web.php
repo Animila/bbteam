@@ -1,58 +1,45 @@
 <?php
 
-use App\Http\Controllers\Account\LoginController;
-use App\Http\Controllers\Auth\SocialController;
-use App\Http\Controllers\GetController;
-use App\Http\Controllers\MangaShowScans;
-use App\Http\Controllers\VkDonut;
-use App\Models\SocialAccount;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
-Route::get('/', [GetController::class])->name('main');
+Route::get('/', function () {
+    return 'главная';
+})->name('main');
 
+//авторизация и регистрация
 Route::post('/register', Account\RegisterController::class)->name('reg')->middleware('guest');
 Route::post('/auth', Account\LoginController::class)->name('auth')->middleware('guest');
-Route::get('/logout', function ()
-    {
-        Auth::logout();
-        return back();
-    }
-)->name('logout')->middleware('auth');
+Route::get('/logout', function (){Auth::logout();return back();})->name('logout')->middleware('auth');
 
-//Route::get('/social-auth/{provider}', function ($provider) {return Socialite::driver($provider)->scopes(['groups'])->redirect();})->name('auth.social');
-//Route::get('/social-auth/{provider}/callback', SocialController::class)->name('auth.social.callback');
-//Route::get('/social/delete', function ()
-//{
-//    SocialAccount::where('user_id', auth()->id())->first()->delete();
-//    return back();
-//}
-//)->name('auth.delete');
-//Route::get('/premium/VkDonut', VkDonut::class)->name('premium.DONUT');
-//Route::get('/premium/VkDonut/unpin', function (){\auth()->user()->update(['premium'=>0]);return back();})->name('premium.UNDONUT');
-//
-//Route::get('/account', function () {return view('account.index');})->name('account.index')->middleware('auth');
-//Route::get('/manga/{title_eng}/{chapter}', MangaShowScans::class)->name('manga.show.scans')->middleware('auth');
-//Route::get('/admin', function ()
-//{
+//подключение социальных аккаунтов
+Route::get('/social-auth/{provider}', function ($provider) {return Socialite::driver($provider)->scopes(['groups'])->redirect();})->name('auth.social');
+Route::get('/social-auth/{provider}/callback', Account\SocialController::class)->name('auth.social.callback');
+Route::get('/social/delete', function ()
+{
+    Account\SocialAccount::where('user_id', auth()->id())->first()->delete();
+    return back();
+}
+)->name('auth.delete');
+
+//подключение премиума
+Route::get('/premium/VkDonut', Account\VkDonut::class)->name('premium.DONUT');
+Route::get('/premium/VkDonut/unpin', function (){\auth()->user()->update(['premium'=>0]);return back();})->name('premium.UNDONUT');
+
+
+Route::get('/admin', function ()
+{
 //    if (Gate::check('for_admin_user')){
 //        return 'админ';
 //    } else {
 //        return 'нельзя';
 //    }
-//}
-//)->name('admin')->middleware('auth');
+    return view('admin.main.index');
+})->name('admin');
+//    ->middleware('auth');
+//Route::get('/account', function () {return view('account.index');})->name('account.index')->middleware('auth');
+//Route::get('/manga/{title_eng}/{chapter}', MangaShowScans::class)->name('manga.show.scans')->middleware('auth');
 

@@ -1,9 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Account;
 
+use App\Http\Controllers\Controller;
 use App\Models\SocialAccount;
-use Illuminate\Http\Request;
+use function auth;
+use function back;
+use function dd;
+use function redirect;
 
 class VkDonut extends Controller
 {
@@ -27,8 +31,7 @@ class VkDonut extends Controller
         $result = json_decode(file_get_contents($url, false, $context), true);
 
         if (isset($result['error'])) {
-            dd('есть ли');
-            return back();
+            return $result['error'];
         }
         auth()->user()->update([
             'premium'=> $result['response']['status'] == 'active',

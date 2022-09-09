@@ -36,19 +36,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/getMangas', function () {
     return MangaResource::collection(Manga::all());
 });
-
 Route::get('/getMangas.filters', function (Request $request) {
     return MangaResource::collection(Manga::filter(app()->make(MangaFilter::class, ['queryParams'=>array_filter($request->all())]))->get());
 });
-
 Route::get('/getManga', function (Request $request) {
     return new MangaResource(Manga::find($request->get('manga')));
 });
-
 Route::get('/getListChapters', function (Request $request) {
     return MangaChapterResource::collection(Manga::find($request->get('manga'))->chapters);
 });
-
 Route::middleware('auth:sanctum')->get('/getChapter', function (Request $request) {
     if (Gate::check('for_premium_user')) {
         return ScansResource::collection(Chapter::find($request->get('chapter'))->scans);
