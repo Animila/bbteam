@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Genre extends Model
 {
     use HasFactory;
+    protected $table = 'tags';
+    protected $guarded = false;
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
