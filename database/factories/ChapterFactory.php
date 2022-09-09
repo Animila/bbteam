@@ -15,11 +15,7 @@ class ChapterFactory extends Factory
     public function definition()
     {
         return [
-            'id_manga' => Manga::all()->random()->id,
-            'tom' => $this->faker->randomNumber(),
-            'number' => $this->faker->randomNumber(),
-            'title' => $this->faker->title,
-            'premium_access' => $this->faker->boolean,
+
         ];
     }
 }

@@ -11,7 +11,10 @@ use App\Models\Scans;
 use App\Models\Status;
 use App\Models\Tag;
 use App\Models\Type;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -186,19 +189,157 @@ class DatabaseSeeder extends Seeder
         Tag::factory()->create(['title' => 'Япония']);
     }
 
+    public function create_mangas() {
+        Manga::factory()->create([
+            'title_eng' => 'Rent-a-Girlfriend',
+            'title_ru' => 'Девушка на час',
+            'title_korean' => 'Kanojo, okarishimasu',
+            'text' => 'Киносита Кадзуя – обычный студент университета, которого девушка только что бросила ради другого парня. Чувствуя себя ниже плинтуса, он решает воспользоваться приложением «Diamond», наняв Мидзухару Чизуру, девушку на час, чтобы почувствовать себя лучше. По первому впечатлению она идеальная девушка, но правда ли она такая, какой кажется? И как будут развиваться их не совсем обычные отношения?',
+            'censor' => 0,
+            'id_type' => 1,
+            'id_status' => 3,
+        ]);
+        Manga::factory()->create([
+            'title_eng' => 'Wind Breaker',
+            'title_ru' => 'Ветролом',
+            'title_korean' => '',
+            'text' => 'Ветролом — драма о юных уличных гонщиках, мечтающих о свободе. Главный герой — Джа Хён — сын успешных родителей и лучший ученик в своей школе. Он никогда не знал, что значит «бороться за свою мечту», ведь вся его жизнь определялась родителями, которые хотят для сына только одного — успешного окончания школы. Но однажды Джа Хён, с детства любящий велоспорт, оказывается втянут в деятельность местных гонщиков, что заставляет героя пересмотреть приоритеты родителей и прислушаться к себе, ведь на своем новом пути он обретает друзей, любовь и приключения.',
+            'censor' => 0,
+            'id_type' => 2,
+            'id_status' => 1,
+        ]);
+        Manga::factory()->create([
+            'title_eng' => 'Lol',
+            'title_ru' => 'Лол',
+            'title_korean' => 'loool',
+            'text' => 'Хз что писать',
+            'censor' => 1,
+            'id_type' => 1,
+            'id_status' => 4,
+        ]);
+        Manga::factory()->create([
+            'title_eng' => 'манга 1',
+            'title_ru' => 'манга 1',
+            'title_korean' => 'lorem',
+            'text' => 'Хз что писать',
+            'censor' => 1,
+            'id_type' => 2,
+            'id_status' => 1,
+        ]);
+        Manga::factory()->create([
+            'title_eng' => 'манга 2',
+            'title_ru' => 'манга 2',
+            'title_korean' => 'lorem',
+            'text' => 'Хз что писать',
+            'censor' => 1,
+            'id_type' => 1,
+            'id_status' => 2,
+        ]);
+    }
+
+    public function create_chapters(){
+        Chapter::factory()->create([
+            'id_manga' => 1,
+            'tom' => 1,
+            'number' => 1,
+            'premium_access' => random_int(0, 1),
+            'date_of_free'=>Carbon::now()
+        ]);
+        Chapter::factory()->create([
+            'id_manga' => 1,
+            'tom' => 1,
+            'number' => 2,
+            'premium_access' => random_int(0, 1),
+            'date_of_free'=>Carbon::now()
+        ]);
+        Chapter::factory()->create([
+            'id_manga' => 1,
+            'tom' => 1,
+            'number' => 3,
+            'premium_access' => random_int(0, 1),
+            'date_of_free'=>Carbon::now()
+        ]);
+        Chapter::factory()->create([
+            'id_manga' => 1,
+            'tom' => 2,
+            'number' => 1,
+            'premium_access' => random_int(0, 1),
+            'date_of_free'=>Carbon::now()
+        ]);
+        Chapter::factory()->create([
+            'id_manga' => 1,
+            'tom' => 2,
+            'number' => 2,
+            'premium_access' => random_int(0, 1),
+            'date_of_free'=>Carbon::now()
+        ]);
+        Chapter::factory()->create([
+            'id_manga' => 1,
+            'tom' => 2,
+            'number' => 3,
+            'premium_access' => random_int(0, 1),
+            'date_of_free'=>Carbon::now()
+        ]);
+        Chapter::factory()->create([
+            'id_manga' => 2,
+            'tom' => 1,
+            'number' => 1,
+            'premium_access' => random_int(0, 1),
+            'date_of_free'=>Carbon::now()
+        ]);
+        Chapter::factory()->create([
+            'id_manga' => 2,
+            'tom' => 1,
+            'number' => 2,
+            'premium_access' => random_int(0, 1),
+            'date_of_free'=>Carbon::now()
+        ]);
+        Chapter::factory()->create([
+            'id_manga' => 2,
+            'tom' => 1,
+            'number' => 3,
+            'premium_access' => random_int(0, 1),
+            'date_of_free'=>Carbon::now()
+        ]);
+        Chapter::factory()->create([
+            'id_manga' => 2,
+            'tom' => 2,
+            'number' => 1,
+            'premium_access' => random_int(0, 1),
+            'date_of_free'=>Carbon::now()
+        ]);
+        Chapter::factory()->create([
+            'id_manga' => 2,
+            'tom' => 2,
+            'number' => 2,
+            'premium_access' => random_int(0, 1),
+            'date_of_free'=>Carbon::now()
+        ]);
+        Chapter::factory()->create([
+            'id_manga' => 2,
+            'tom' => 2,
+            'number' => 3,
+            'premium_access' => random_int(0, 1),
+            'date_of_free'=>Carbon::now()
+        ]);
+    }
+
     public function run()
     {
         $this->create_types();
         $this->create_status();
         $this->create_genres();
         $this->create_tags();
-        Manga::factory()->count(9)->create();
-        Chapter::factory()->count(45)->create();
-        Scans::factory()->count(100)->create();
-        MangaGenre::factory()->count(100)->create();
-        MangaTag::factory()->count(100)->create();
-
-//            $this->create_genres();
-//            $this->create_tag();
+        $this->create_mangas();
+        $this->create_chapters();
+        Scans::factory()->count(20)->create();
+        MangaGenre::factory()->count(10)->create()->unique();
+        MangaTag::factory()->count(10)->create()->unique();
+        User::create([
+            'nickname'=>'animila',
+            'name'=>'omega',
+            'gender'=>'неизвестно',
+            'email'=>'lol@ff.ru',
+            'password'=>Hash::make('123')]);
     }
 }

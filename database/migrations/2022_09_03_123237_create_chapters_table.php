@@ -20,6 +20,7 @@ class CreateChaptersTable extends Migration
             $table->integer('number')->default(1);
             $table->string('title')->nullable();
             $table->boolean('premium_access')->default(false);
+            $table->dateTime('date_of_free');
             $table->timestamps();
             $table->softDeletes();
 

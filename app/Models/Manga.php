@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,7 +10,7 @@ class Manga extends Model
 {
     use HasFactory;
     protected $guarded = false;
-
+    use Filterable;
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
