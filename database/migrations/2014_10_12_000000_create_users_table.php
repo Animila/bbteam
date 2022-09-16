@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('gender');
             $table->text('about')->nullable();
+            $table->boolean('hide')->default(false);
 
             $table->boolean('hide_18')->default(false);
             $table->boolean('premium')->default(false);
@@ -29,7 +30,6 @@ class CreateUsersTable extends Migration
 
             $table->rememberToken();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

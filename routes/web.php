@@ -1,45 +1,145 @@
 <?php
 
+use App\Models\Chapter;
+use App\Models\Manga;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 
+/***
+ *
+ * ПРОЧЕЕ
+ *
+ ***/
+Route::get('/', function () { return view('welcome');})->name('main');
 
-Route::get('/', function () {
-    return 'главная';
-})->name('main');
+/***
+ *
+ * РЕГИСТРАЦИЯ И АВТОРИЗАЦИЯ
+ *
+ ***/
+Route::get('/register', function () {
+    return view('account.register');
+})->name('register')->middleware('guest');
+Route::get('/login', function () {
+    return view('account.login');
+})->name('login')->middleware('guest');
 
-//авторизация и регистрация
 Route::post('/register', Account\RegisterController::class)->name('reg')->middleware('guest');
 Route::post('/auth', Account\LoginController::class)->name('auth')->middleware('guest');
 Route::get('/logout', function (){Auth::logout();return back();})->name('logout')->middleware('auth');
 
-//подключение социальных аккаунтов
+/***
+ *
+ * ПРИВЯЗКА К СОЦИАЛЬНЫМ СЕТЯМ
+ *
+ ***/
 Route::get('/social-auth/{provider}', function ($provider) {return Socialite::driver($provider)->scopes(['groups'])->redirect();})->name('auth.social');
 Route::get('/social-auth/{provider}/callback', Account\SocialController::class)->name('auth.social.callback');
 Route::get('/social/delete', function ()
 {
     Account\SocialAccount::where('user_id', auth()->id())->first()->delete();
     return back();
-}
-)->name('auth.delete');
+})->name('auth.delete');
 
-//подключение премиума
+/***
+ *
+ * ПРЕМИУМ
+ *
+ ***/
 Route::get('/premium/VkDonut', Account\VkDonut::class)->name('premium.DONUT');
 Route::get('/premium/VkDonut/unpin', function (){\auth()->user()->update(['premium'=>0]);return back();})->name('premium.UNDONUT');
 
+/***
+ *
+ * АДМИН ПАНЕЛЬ
+ *
+ ***/
+Route::middleware('auth')->prefix('admin')->group(function () {
+    Route::get('/statistics', Admin\StatisticsController::class)->name('statistics');
 
-Route::get('/admin', function ()
-{
-//    if (Gate::check('for_admin_user')){
-//        return 'админ';
-//    } else {
-//        return 'нельзя';
-//    }
-    return view('admin.main.index');
-})->name('admin');
-//    ->middleware('auth');
-//Route::get('/account', function () {return view('account.index');})->name('account.index')->middleware('auth');
-//Route::get('/manga/{title_eng}/{chapter}', MangaShowScans::class)->name('manga.show.scans')->middleware('auth');
+    Route::get('/titles', Admin\Titles\TitlesController::class)->name('titles');
+    Route::get('/titles/{manga}/edit', function (Manga $manga) {
+        $content = [
+            'robots'=>'ALL, NOARCHIVE',
+            'title_page'=>'Редактирование '.$manga->title_ru,
+            'description'=>'Что-то',
+            'keywords' => 'Манга'.' Манхва'.' Читать'.' Маньхуа',
+            'manga'=>$manga
+        ];
+
+        return view('admin.titles.edit', compact('content'));
+    })->name('titles.edit');
+    Route::get('/titles/create', function () {
+        $content = [
+            'robots'=>'ALL, NOARCHIVE',
+            'title_page'=>'Добавление нового тайтла',
+            'description'=>'Что-то',
+            'keywords' => 'Манга'.' Манхва'.' Читать'.' Маньхуа',
+        ];
+
+        return view('admin.titles.create', compact('content'));
+    })->name('titles.create');
+    Route::post('/titles', Admin\Titles\StoreController::class)->name('titles.store');
+    Route::patch('/titles', Admin\Titles\UpdateController::class)->name('titles.update');
+    Route::delete('/titles/{manga}', function (Manga $manga) {
+
+        foreach ($manga->chapters as $chapter) {
+            foreach ($chapter->scans as $scan) {
+                $scan->delete();
+            }
+            $chapter->delete();
+        }
+        $manga->tags()->detach();
+        $manga->genres()->detach();
+        $manga->delete();
+        return redirect()->route('titles');
+
+    })->name('titles.delete');
+
+    Route::get('/chapters', Admin\Chapters\ChaptersController::class)->name('chapter');
+    Route::get('/chapters/{chapter}/edit', function (Chapter $chapter) {
+        $content = [
+            'robots'=>'ALL, NOARCHIVE',
+            'title_page'=>'Редактирование '.$chapter->title_ru,
+            'description'=>'Что-то',
+            'keywords' => 'Манга'.' Манхва'.' Читать'.' Маньхуа',
+            'chapter'=>$chapter
+        ];
+
+        return view('admin.chapters.edit', compact('content'));
+    })->name('chapter.edit');
+    Route::get('/chapters/create', function () {
+        $content = [
+            'robots'=>'ALL, NOARCHIVE',
+            'title_page'=>'Добавление новой главы',
+            'description'=>'Что-то',
+            'keywords' => 'Манга'.' Манхва'.' Читать'.' Маньхуа',
+        ];
+
+        return view('admin.chapters.create', compact('content'));
+    })->name('chapter.create');
+    Route::post('/chapters', Admin\Chapters\StoreController::class)->name('chapter.store');
+    Route::patch('/chapters', Admin\Chapters\UpdateController::class)->name('chapter.update');
+    Route::delete('/chapters/{manga}', function (Manga $manga) {
+
+        foreach ($manga->chapters as $chapter) {
+            foreach ($chapter->scans as $scan) {
+                $scan->delete();
+                dump($scan);
+            }
+            dump($chapter);
+            $chapter->delete();
+        }
+        $manga->tags()->detach();
+        $manga->genres()->detach();
+        $manga->delete();
+        return redirect()->route('titles');
+
+    })->name('chapter.delete');
+
+});
+Route::post('/chapter/images', Admin\Chapters\Image\StoreController::class)->name('image.store');
+
+
 

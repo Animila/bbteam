@@ -330,16 +330,16 @@ class DatabaseSeeder extends Seeder
         $this->create_status();
         $this->create_genres();
         $this->create_tags();
-        $this->create_mangas();
-        $this->create_chapters();
-        Scans::factory()->count(20)->create();
-        MangaGenre::factory()->count(10)->create()->unique();
-        MangaTag::factory()->count(10)->create()->unique();
-        User::create([
-            'nickname'=>'animila',
-            'name'=>'omega',
-            'gender'=>'неизвестно',
-            'email'=>'lol@ff.ru',
-            'password'=>Hash::make('123')]);
+//        $this->create_mangas();
+//        $this->create_chapters();
+//        Scans::factory()->count(20)->create();
+//        MangaGenre::factory()->count(10)->create()->unique();
+//        MangaTag::factory()->count(10)->create()->unique();
+//        User::create([
+//            'nickname'=>'animila',
+//            'name'=>'omega',
+//            'gender'=>'неизвестно',
+//            'email'=>'lol@ff.ru',
+//            'password'=>Hash::make('123')]);
     }
 }

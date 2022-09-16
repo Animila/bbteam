@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,6 +19,15 @@ class LoginController extends Controller
         $yes = isset($credentials['remember']);
         unset($credentials['remember']);
 
+        if(User::where('email', $credentials['email'])->first() == null) {
+            return [
+                'status'=> false,
+                'type'=>'email',
+                'error'=>'Такой почты не существует'
+            ];
+        }
+
+
         if (Auth::attempt($credentials, $yes)) {
             $request->session()->regenerate();
             return [
@@ -26,7 +36,7 @@ class LoginController extends Controller
         } else {
             return [
                 'status'=>False,
-                'error'=>'Ошибка авторизации. Проверьте логин или пароль'
+                'error'=>'Ошибка авторизации. Проверьте почту или пароль'
             ];
         }
     }

@@ -1,0 +1,12 @@
+.form-number {
+  max-width: 20%;
+}
+.login-form {
+    width: 8vh;
+    display: block;
+    margin: 0 auto;
+}
+@supports (-webkit-appearance:none) {
+
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInN0eWxlLnNhc3MiLCJzdHlsZS5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxjQUFBO0FDQ0Y7QUFDQTs7QUFFQSIsImZpbGUiOiJzdHlsZS5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuZm9ybS1udW1iZXJcclxuICBtYXgtd2lkdGg6IDIwJVxyXG4iLCIuZm9ybS1udW1iZXIge1xuICBtYXgtd2lkdGg6IDIwJTtcbn1cbkBzdXBwb3J0cyAoLXdlYmtpdC1hcHBlYXJhbmNlOm5vbmUpe1xuXG59XG4iXX0= */
