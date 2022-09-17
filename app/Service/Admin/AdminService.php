@@ -34,13 +34,16 @@ class AdminService
 
     }
     public function TitlesUpdate($data) {
+
+        $manga = Manga::find($data['id_manga']);
+
         if(isset($data['image'])) {
+            unlink(public_path('storage/'.$manga->images()->first()->url));
             $path = '/images/titles/'.str_replace(' ', '_', $data['title_eng']);
             $Image = Storage::putFileAs($path, $data['image'], $data['image']->getClientOriginalName());
             unset($data['image']);
         }
 
-        $manga = Manga::find($data['id_manga']);
         $tags = $data['id_tags'];
         $genres = $data['id_genres'];
         $data['text'] = $data['description'];
@@ -60,12 +63,12 @@ class AdminService
         $manga->tags()->sync($tags);
         $manga->genres()->sync($genres);
 
-        if(isset($data['image'])) {
-            dd($manga->images());
+        if(isset($Image)) {
+
+            $manga->images()->first()->update([
+                'url'=>$Image,
+            ]);
         }
-        $manga->images()->first()->update([
-            'url'=>$Image,
-        ]);
         return $manga->id;
     }
 
@@ -82,7 +85,6 @@ class AdminService
 
     public function ChaptersUpdate($data) {
 
-//        !!!ПОЧИНИТЬ
         $chapter = Chapter::find($data['id_chapter']);
         $data['hide'] = isset($data['hide']);
         $data['premium_access'] = isset($data['premium']);

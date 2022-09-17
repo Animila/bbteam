@@ -152,15 +152,21 @@ date_default_timezone_set('Asia/Yakutsk');
                 'premium_access': document.forms["parameters"].elements['premium'].value,
             }
             let error = false;
-            if($('date_of_free').val() == null) {
+            if($('#date_of_free').val() == '') {
                 $('#date_of_free').addClass('is-invalid')
                 $('#error-date_of_free').html('Введите дату').removeClass('d-none')
                 error = true;
+            } else {
+                $('#date_of_free').removeClass('is-invalid')
+                $('#error-date_of_free').addClass('d-none')
             }
-            if($('image').val() == null) {
+            if($('#image').val() == '') {
                 $('#image').addClass('is-invalid')
                 $('#error-image').html('Нет данных').removeClass('d-none')
                 error = true;
+            } else {
+                $('#image').removeClass('is-invalid')
+                $('#error-image').addClass('d-none')
             }
             if(error) {return false;}
             axios.post('{{route('chapter.store')}}', data, {
