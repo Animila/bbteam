@@ -1,11 +1,9 @@
 <?php
 
 use App\Models\Chapter;
-use App\Models\Manga;
 use App\Models\Scans;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 use Laravel\Socialite\Facades\Socialite;
 
 /***
@@ -20,15 +18,12 @@ Route::get('/', function () { return view('welcome');})->name('main');
  * РЕГИСТРАЦИЯ И АВТОРИЗАЦИЯ
  *
  ***/
-Route::get('/register', function () {
-    return view('account.register');
-})->name('register')->middleware('guest');
-Route::get('/login', function () {
-    return view('account.login');
-})->name('login')->middleware('guest');
-
+Route::get('/register', function () {return view('account.register');})->name('register')->middleware('guest');
 Route::post('/register', Account\RegisterController::class)->name('reg')->middleware('guest');
+
+Route::get('/login', function () {return view('account.login');})->name('login')->middleware('guest');
 Route::post('/auth', Account\LoginController::class)->name('auth')->middleware('guest');
+
 Route::get('/logout', function (){Auth::logout();return back();})->name('logout')->middleware('auth');
 
 /***
@@ -38,11 +33,7 @@ Route::get('/logout', function (){Auth::logout();return back();})->name('logout'
  ***/
 Route::get('/social-auth/{provider}', function ($provider) {return Socialite::driver($provider)->scopes(['groups'])->redirect();})->name('auth.social');
 Route::get('/social-auth/{provider}/callback', Account\SocialController::class)->name('auth.social.callback');
-Route::get('/social/delete', function ()
-{
-    Account\SocialAccount::where('user_id', auth()->id())->first()->delete();
-    return back();
-})->name('auth.delete');
+Route::get('/social/delete', function (){Account\SocialAccount::where('user_id', auth()->id())->first()->delete();return back();})->name('auth.delete');
 
 /***
  *
@@ -58,92 +49,34 @@ Route::get('/premium/VkDonut/unpin', function (){\auth()->user()->update(['premi
  *
  ***/
 Route::middleware('auth')->prefix('admin')->group(function () {
-    Route::get('/statistics', Admin\StatisticsController::class)->name('statistics');
 
-    Route::get('/titles', Admin\Titles\TitlesController::class)->name('titles');
-    Route::get('/titles/{manga}/edit', function (Manga $manga) {
-        $content = [
-            'robots'=>'ALL, NOARCHIVE',
-            'title_page'=>'Редактирование '.$manga->title_ru,
-            'description'=>'Что-то',
-            'keywords' => 'Манга'.' Манхва'.' Читать'.' Маньхуа',
-            'manga'=>$manga
-        ];
+    Route::prefix('/statistics')->group(function () {
+        Route::get('/', Admin\StatisticsController::class)->name('statistics');
+    });
 
-        return view('admin.titles.edit', compact('content'));
-    })->name('titles.edit');
-    Route::get('/titles/create', function () {
-        $content = [
-            'robots'=>'ALL, NOARCHIVE',
-            'title_page'=>'Добавление нового тайтла',
-            'description'=>'Что-то',
-            'keywords' => 'Манга'.' Манхва'.' Читать'.' Маньхуа',
-        ];
+    Route::prefix('/titles')->group(function () {
+        Route::get('/', Admin\Titles\TitlesController::class)->name('titles');
+        Route::get('/create', Admin\Titles\CreateController::class)->name('titles.create');
+        Route::post('/', Admin\Titles\StoreController::class)->name('titles.store');
+        Route::get('/{manga}/edit', Admin\Titles\EditController::class)->name('titles.edit');
+        Route::patch('/', Admin\Titles\UpdateController::class)->name('titles.update');
+        Route::delete('/{manga}', Admin\Titles\DeleteController::class)->name('titles.delete');
+    });
 
-        return view('admin.titles.create', compact('content'));
-    })->name('titles.create');
-    Route::post('/titles', Admin\Titles\StoreController::class)->name('titles.store');
-    Route::patch('/titles', Admin\Titles\UpdateController::class)->name('titles.update');
-    Route::delete('/titles/{manga}', function (Manga $manga) {
+    Route::prefix('/chapters')->group(function () {
+        Route::get('/', Admin\Chapters\ChaptersController::class)->name('chapter');
+        Route::get('/create', Admin\Chapters\CreateController::class)->name('chapter.create');
+        Route::post('/', Admin\Chapters\StoreController::class)->name('chapter.store');
+        Route::get('/{chapter}/edit', Admin\Chapters\EditController::class)->name('chapter.edit');
+        Route::patch('/', Admin\Chapters\UpdateController::class)->name('chapter.update');
+        Route::delete('/{chapter}',Admin\Chapters\DeleteController::class)->name('chapter.delete');
+    });
 
-        foreach ($manga->chapters as $chapter) {
-            foreach ($chapter->scans as $scan) {
-                unlink(public_path($scan->url));
-                $scan->delete();
-            }
-            $chapter->delete();
-        }
-        $manga->tags()->detach();
-        $manga->genres()->detach();
-        $manga->delete();
-        return redirect()->route('titles');
-
-    })->name('titles.delete');
-
-    Route::get('/chapters', Admin\Chapters\ChaptersController::class)->name('chapter');
-    Route::get('/chapters/{chapter}/edit', function (Chapter $chapter) {
-        $content = [
-            'robots'=>'ALL, NOARCHIVE',
-            'title_page'=>'Редактирование '.$chapter->title_ru,
-            'description'=>'Что-то',
-            'keywords' => 'Манга'.' Манхва'.' Читать'.' Маньхуа',
-            'chapter'=>$chapter
-        ];
-
-        return view('admin.chapters.edit', compact('content'));
-    })->name('chapter.edit');
-    Route::get('/chapters/create', function () {
-        $content = [
-            'robots'=>'ALL, NOARCHIVE',
-            'title_page'=>'Добавление новой главы',
-            'description'=>'Что-то',
-            'keywords' => 'Манга'.' Манхва'.' Читать'.' Маньхуа',
-        ];
-
-        return view('admin.chapters.create', compact('content'));
-    })->name('chapter.create');
-    Route::post('/chapters', Admin\Chapters\StoreController::class)->name('chapter.store');
-    Route::patch('/chapters', Admin\Chapters\UpdateController::class)->name('chapter.update');
-    Route::delete('/chapters/{chapter}', function (Chapter $chapter) {
-
-        foreach ($chapter->scans as $scan) {
-            unlink(public_path($scan->url));
-                $scan->delete();
-        }
-        $chapter->delete();
-
-        return redirect()->route('chapter');
-
-    })->name('chapter.delete');
-    Route::post('/chapter/images', Admin\Chapters\Image\StoreController::class)->name('image.store');
-    Route::delete('/scan/{scan}', function (Scans $scan) {
-
-        unlink(public_path($scan->url));
-        $scan->delete();
-
-        return redirect()->route('chapter.edit', $scan->chapter);
-
-    })->name('image.delete');
+    Route::prefix('/scan')->group(function () {
+        Route::post('/create', Admin\Chapters\Image\StoreController::class)->name('image.store');
+        Route::patch('/{scan}', Admin\Chapters\Image\UpdateController::class)->name('image.update');
+        Route::delete('/{scan}', Admin\Chapters\Image\DeleteController::class)->name('image.delete');
+    });
 
 });
 

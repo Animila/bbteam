@@ -7,22 +7,22 @@ use Illuminate\Support\Facades\Gate;
 use function back;
 use function view;
 
-class TitlesController extends BaseController
+class CreateController extends BaseController
 {
     public function __invoke()
     {
         if (Gate::check('for_admin_user')){
-            $manga = Manga::all();
+
             $content = [
                 'robots'=>'ALL, NOARCHIVE',
-                'title_page'=>'Каталог тайтлов',
-                'description'=>'Список тайтлов',
+                'title_page'=>'Добавление нового тайтла',
+                'description'=>'Что-то',
                 'keywords' => 'Манга'.' Манхва'.' Читать'.' Маньхуа',
-                'manga'=>$manga
             ];
-        return view('admin.titles.index', compact('content'));
-    } else {
-        return back();
-    }
+
+            return view('admin.titles.create', compact('content'));
+        } else {
+            return back();
+        }
     }
 }

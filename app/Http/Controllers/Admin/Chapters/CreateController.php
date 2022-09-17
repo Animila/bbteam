@@ -1,26 +1,25 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Titles;
+namespace App\Http\Controllers\Admin\Chapters;
 
-use App\Models\Manga;
+use App\Models\Chapter;
 use Illuminate\Support\Facades\Gate;
 use function back;
 use function view;
 
-class TitlesController extends BaseController
+class CreateController extends BaseController
 {
     public function __invoke()
     {
         if (Gate::check('for_admin_user')){
-            $manga = Manga::all();
             $content = [
                 'robots'=>'ALL, NOARCHIVE',
-                'title_page'=>'Каталог тайтлов',
-                'description'=>'Список тайтлов',
+                'title_page'=>'Добавление новой главы',
+                'description'=>'Что-то',
                 'keywords' => 'Манга'.' Манхва'.' Читать'.' Маньхуа',
-                'manga'=>$manga
             ];
-        return view('admin.titles.index', compact('content'));
+
+            return view('admin.chapters.create', compact('content'));
     } else {
         return back();
     }

@@ -7,20 +7,20 @@ use Illuminate\Support\Facades\Gate;
 use function back;
 use function view;
 
-class ChaptersController extends BaseController
+class EditController extends BaseController
 {
-    public function __invoke()
+    public function __invoke(Chapter $chapter)
     {
         if (Gate::check('for_admin_user')){
-            $chapter = Chapter::all();
             $content = [
                 'robots'=>'ALL, NOARCHIVE',
-                'title_page'=>'Каталог тайтлов',
-                'description'=>'Список тайтлов',
+                'title_page'=>'Редактирование '.$chapter->title_ru,
+                'description'=>'Что-то',
                 'keywords' => 'Манга'.' Манхва'.' Читать'.' Маньхуа',
-                'chapters'=>$chapter
+                'chapter'=>$chapter
             ];
-        return view('admin.chapters.index', compact('content'));
+
+            return view('admin.chapters.edit', compact('content'));
     } else {
         return back();
     }

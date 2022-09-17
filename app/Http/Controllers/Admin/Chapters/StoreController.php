@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin\Chapters;
 
-use App\Http\Controllers\Admin\BaseController;
 use App\Http\Requests\Admin\Chapters\StoreRequest;
 
 class StoreController extends BaseController
