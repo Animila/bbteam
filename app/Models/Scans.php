@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Scans extends Model
 {
     use HasFactory;
+    protected $guarded = false;
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

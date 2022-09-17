@@ -2,8 +2,10 @@
 
 use App\Models\Chapter;
 use App\Models\Manga;
+use App\Models\Scans;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Socialite\Facades\Socialite;
 
 /***
@@ -86,6 +88,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 
         foreach ($manga->chapters as $chapter) {
             foreach ($chapter->scans as $scan) {
+                unlink(public_path($scan->url));
                 $scan->delete();
             }
             $chapter->delete();
@@ -121,25 +124,28 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     })->name('chapter.create');
     Route::post('/chapters', Admin\Chapters\StoreController::class)->name('chapter.store');
     Route::patch('/chapters', Admin\Chapters\UpdateController::class)->name('chapter.update');
-    Route::delete('/chapters/{manga}', function (Manga $manga) {
+    Route::delete('/chapters/{chapter}', function (Chapter $chapter) {
 
-        foreach ($manga->chapters as $chapter) {
-            foreach ($chapter->scans as $scan) {
+        foreach ($chapter->scans as $scan) {
+            unlink(public_path($scan->url));
                 $scan->delete();
-                dump($scan);
-            }
-            dump($chapter);
-            $chapter->delete();
         }
-        $manga->tags()->detach();
-        $manga->genres()->detach();
-        $manga->delete();
-        return redirect()->route('titles');
+        $chapter->delete();
+
+        return redirect()->route('chapter');
 
     })->name('chapter.delete');
+    Route::post('/chapter/images', Admin\Chapters\Image\StoreController::class)->name('image.store');
+    Route::delete('/scan/{scan}', function (Scans $scan) {
+
+        unlink(public_path($scan->url));
+        $scan->delete();
+
+        return redirect()->route('chapter.edit', $scan->chapter);
+
+    })->name('image.delete');
 
 });
-Route::post('/chapter/images', Admin\Chapters\Image\StoreController::class)->name('image.store');
 
 
 

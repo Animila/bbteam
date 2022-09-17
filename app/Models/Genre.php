@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Genre extends Model
 {
     use HasFactory;
-    protected $table = 'tags';
+    protected $table = 'genres';
     protected $guarded = false;
 
     /**

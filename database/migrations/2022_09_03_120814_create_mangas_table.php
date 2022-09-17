@@ -19,11 +19,11 @@ class CreateMangasTable extends Migration
             $table->string('title_ru');
             $table->string('title_korean')->nullable();
             $table->text('text');
+            $table->boolean('hide')->default(false);
             $table->boolean('censor')->default(false);
             $table->unsignedBigInteger('id_type');
             $table->unsignedBigInteger('id_status');
             $table->timestamps();
-            $table->softDeletes();
 
             $table->index('id_type', 'manga_type_idx');
             $table->index('id_status', 'manga_status_idx');
