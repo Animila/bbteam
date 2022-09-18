@@ -103,10 +103,10 @@ date_default_timezone_set('Asia/Yakutsk');
                     @csrf
                     <div class="form-group bg-dark p-2">
                         <div class="text-monospace"><i>ВНИМАНИЕ!<br>- Загружать только архивы!<br> - Внутри архива располагать сканы в алфавитном порядке!<br>- При использовании цифр использовать формат: "01, 02, 11" (НЕ ИСПОЛЬЗОВАТЬ "1, 2, 3")</i></div>
-                        <label for="exampleInputFile">Обложка</label>
+                        <label for="exampleInputFile">Сканы</label>
                         <div class="input-group">
                             <div class="custom-file">
-                                <input class="custom-file-input bg-dark" type="file" name="image" id="image">>
+                                <input class="custom-file-input bg-dark" type="file" name="image" id="image">
                                 <label class="custom-file-label" for="image">Выбрать файл</label>
                             </div>
                         </div>

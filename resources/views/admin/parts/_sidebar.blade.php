@@ -12,11 +12,13 @@
                         <p>Тайтлы</p></a></li>
                 <li class="nav-item"><a class="nav-link" href="{{route('chapter')}}"><i class="nav-icon fas fa-book-open"></i>
                         <p>Главы</p></a></li>
-                <li class="nav-item"><a class="nav-link" href="/users.html"><i class="nav-icon fas fa-user"></i>
+                <li class="nav-item"><a class="nav-link" href="{{route('users')}}"><i class="nav-icon fas fa-user"></i>
                         <p>Пользователи</p></a></li>
-                <li class="nav-item"><a class="nav-link" href="/tags.html"><i class="nav-icon fas fa-tags"></i>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="nav-icon fas fa-comment"></i>
+                        <p>Комментарии</p></a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="nav-icon fas fa-tags"></i>
                         <p>Теги</p></a></li>
-                <li class="nav-item"><a class="nav-link" href=""><i class="nav-icon fas fa-book"></i>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="nav-icon fas fa-book"></i>
                         <p>Жанры</p></a></li>
                 <li class="nav-item"><a class="nav-link" href="{{route('main')}}"><i class="nav-icon fas fa-sign-out-alt"></i>
                         <p>Вернуться на сайт</p></a></li>

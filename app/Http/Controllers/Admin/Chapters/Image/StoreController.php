@@ -14,8 +14,8 @@ class StoreController extends Controller
     public function __invoke(Request $request)
     {
         $file = $request->file('image');
-        $manga = str_replace(' ', '_', Chapter::find($request->get('id_chapter'))->manga->title_eng);
         $chapter = Chapter::find($request->get('id_chapter'));
+        $manga = str_replace(' ', '_', $chapter->manga->title_eng);
 
         $pathZip = 'zip/'.$manga;
         $pathZip = Storage::putFileAs($pathZip, $file, $file->getClientOriginalName());

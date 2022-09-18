@@ -8,10 +8,13 @@ date_default_timezone_set('Asia/Yakutsk');
     <link rel="stylesheet" href="{{asset('plugins/select2/css/select2.min.css')}}">
     <link rel="stylesheet" href="{{asset('css/style.min.css')}}">
     <link rel="stylesheet" href="{{asset('/plugins/flatpickr/flatpickr.min.css')}}">
-    <link rel="stylesheet" href="{{asset('/plugins/dropzone/min/dropzone.min.css')}}">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
 @endsection
 
 @section('content')
+    <style>
+        .file-upload label input { display: none; opacity: 0; }
+    </style>
     <div class="content-wrapper bg-black">
         <div class="content-header">
             <div class="container-fluid">
@@ -99,11 +102,20 @@ date_default_timezone_set('Asia/Yakutsk');
                 </div>
             </div>
             <div class="container py-2">
-                <div class="form-group bg-dark">
-                    <div class="row" id="actions">
-                        <div id="fileuploader">Upload</div>
+                <form method="post" enctype="multipart/form-data">
+                    @csrf
+                    <div class="form-group bg-dark p-2">
+                        <label for="exampleInputFile">Добавить скан</label>
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input class="custom-file-input bg-dark" type="file" name="image" id="image" onchange="addImage()">
+                                <input type="hidden" name="id_chapter" id="id_chapter" value="{{$content['chapter']->id}}">
+                                <label class="custom-file-label" for="image">Выбрать файл</label>
+                            </div>
+                        </div>
+                        <div class="callout callout-danger bg-black mt-1 p-1 d-none" id="error-image"></div>
                     </div>
-                </div>
+                </form>
                 <div class="row mt-5 d-none d-sm-block">
                     <table class="table table-hover table-dark">
                         <thead>
@@ -124,12 +136,10 @@ date_default_timezone_set('Asia/Yakutsk');
                                 <th><a href="{{asset($scan->url)}}">{{asset($scan->url)}}</a></th>
                                 <th>{{$scan->number}}</th>
                                 <th>
-                                    <form action="#" method="post" enctype="multipart/form-data">
+                                    <form method="post" enctype="multipart/form-data" id="imageUpdate">
+                                        @csrf
                                         <div class="input-group">
-                                            <div class="custom-file">
-                                                <input class="custom-file-input bg-dark" type="file" name="image" id="image">
-                                                <label class="custom-file-label" for="image">Файл</label>
-                                            </div>
+                                            <input class="bg-dark" type="file" name="image" id="{{$scan->id}}" onchange="updateImage({{$scan->id}})">
                                         </div>
                                     </form>
                                 </th>
@@ -141,46 +151,29 @@ date_default_timezone_set('Asia/Yakutsk');
                                     </form>
                                 </th>
                             </tr>
-                        @endforeach
+                            <script>
+                                function updateImage(id) {
+                                    let file = $('#'+id)[0].files[0];
+                                    let formData = new FormData();
+                                    formData.append("image", file);
+                                    formData.append("_method", 'PATCH');
+                                    axios.post('{{url('admin/chapters/scan')}}/'+id, formData, {
+                                        headers: {
+                                            'Content-Type': 'multipart/form-data',
+                                        },
+                                    }).then(responce => {
+                                        if(responce['data']['status']) {
+                                            location = "{{route('chapter.edit', $content['chapter']->id)}}"
+                                        }
+                                        if(!responce['data']['status']) {
+                                            alert(responce['data']['error'])
+                                        }
+                                    }).catch(error => {
+                                        console.log('Ошибка здесь: ' + error)
+                                    });
+                                }
+                            </script>
 
-                        </tbody>
-                    </table>
-                </div>
-                <div class="row mt-5 d-block d-sm-none">
-                    <table class="table table-hover table-dark">
-                        <thead>
-                        <tr>
-                            <th class="col-1">Id</th>
-                            <th class="col-1">Скан</th>
-                            <th class="col-1">№</th>
-                            <th class="col-2">Обновить</th>
-                            <th class="col-1">Удалить</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($content['chapter']->scans as $scan)
-                            <tr>
-                                <th>{{$scan->id}}</th>
-                                <th><img class="d-block mx-auto mb-3 w-75" src="{{asset($scan->url)}}"></th>
-                                <th>{{$scan->number}}</th>
-                                <th>
-                                    <form action="#" method="post" enctype="multipart/form-data">
-                                        <div class="input-group">
-                                            <div class="custom-file">
-                                                <input class="custom-file-input bg-dark" type="file" name="image" id="image">
-                                                <label class="custom-file-label" for="image">Файл</label>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </th>
-                                <th>
-                                    <form action="{{route('image.delete', $scan->id)}}" method="post" enctype="multipart/form-data">
-                                        @csrf
-                                        @method('delete')
-                                        <button class="btn" type="submit"><i class="fas fa-trash text-light"></i></button>
-                                    </form>
-                                </th>
-                            </tr>
                         @endforeach
 
                         </tbody>
@@ -192,22 +185,55 @@ date_default_timezone_set('Asia/Yakutsk');
 @endsection
 
 @section('add_script')
+
+    <script src="{{asset('plugins/jquery/jquery.min.js')}}"></script>
+    <script src="{{asset('plugins/jquery-ui/jquery-ui.min.js')}}"></script>
+    <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.js')}}"></script>
     <script src="{{asset('plugins/select2/js/select2.full.min.js')}}"></script>
     <script src="{{asset('/plugins/flatpickr/flatpickr.js')}}"></script>
     <script src="{{asset('/plugins/flatpickr/ru.js')}}"></script>
-    <script src="{{asset('/plugins/dropzone/min/dropzone.min.js')}}"></script>
     <script src="{{asset('/dist/js/adminlte.min.js')}}"></script>
-
+    <script src="{{asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js')}}"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>$.widget.bridge('uibutton', $.ui.button)</script>
     <script>
-        $('.select2').select2()
+        function addImage() {
+            let file = $('#image')[0].files[0];
+            let formData = new FormData();
+            formData.append("image", file);
+            formData.append("id_chapter", '{{$content['chapter']->id}}');
+            axios.post('{{route('image.add', $content['chapter']->id)}}', formData, {
+                headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            }).then(responce => {
+                if(responce['data']['status']) {
+                    location = "{{route('chapter.edit', $content['chapter']->id)}}"
+                }
+                if(!responce['data']['status']) {
+                    $('#image').addClass('is-invalid')
+                    $('#error-image').html(responce['data']['error']).removeClass('d-none')
+                }
+            }).catch(error => {
+                console.log('Ошибка здесь: ' + error)
+            });
+        }
 
-    flatpickr('input[type=datetime-local]', {
+        $(function () {
+            bsCustomFileInput.init()
+        })
+        $('.select2').select2()
+        window.chapters = {
+            id_chapter: 0
+        };
+
+
+        flatpickr('input[type=datetime-local]', {
             enableTime: true,
             dateFormat: "Y-m-d, H:i",
             time_24hr: true,
             "locale": "ru"
         })
-
 
     </script>
 @endsection

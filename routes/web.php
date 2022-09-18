@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Scans;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
@@ -63,12 +65,13 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::prefix('/scan')->group(function () {
             Route::post('/create', Admin\Chapters\Image\StoreController::class)->name('image.store');
             Route::patch('/{scan}', Admin\Chapters\Image\UpdateController::class)->name('image.update');
+            Route::post('/add', Admin\Chapters\Image\AddController::class)->name('image.add');
             Route::delete('/{scan}', Admin\Chapters\Image\DeleteController::class)->name('image.delete');
         });
     });
 
     Route::prefix('/users')->group(function () {
-//        Route::get('/', Admin\Users\IndexController::class)->name('users');
+        Route::get('/', Admin\Users\UsersController::class)->name('users');
     });
 
 });
