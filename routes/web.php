@@ -79,6 +79,15 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::patch('/password/{user}', Admin\Users\UpdatePasswordController::class)->name('users.password.update');
     });
 
+    Route::prefix('/tags')->group(function () {
+        Route::get('/', Admin\Tags\TagsController::class)->name('tags');
+        Route::get('/create', Admin\Tags\CreateController::class)->name('tags.create');
+        Route::post('/', Admin\Tags\StoreController::class)->name('tags.store');
+        Route::get('/{tag}', Admin\Tags\EditController::class)->name('tags.edit');
+        Route::patch('/{tag} ', Admin\Tags\UpdateController::class)->name('tags.update');
+        Route::delete('/{tag} ', Admin\Tags\DeleteController::class)->name('tags.delete');
+    });
+
 });
 
 

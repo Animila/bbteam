@@ -16,7 +16,7 @@
                         <p>Пользователи</p></a></li>
                 <li class="nav-item"><a class="nav-link" href="#"><i class="nav-icon fas fa-comment"></i>
                         <p>Комментарии</p></a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="nav-icon fas fa-tags"></i>
+                <li class="nav-item"><a class="nav-link" href="{{route('tags')}}"><i class="nav-icon fas fa-tags"></i>
                         <p>Теги</p></a></li>
                 <li class="nav-item"><a class="nav-link" href="#"><i class="nav-icon fas fa-book"></i>
                         <p>Жанры</p></a></li>
