@@ -13,6 +13,7 @@
         </div>
         <section class="content">
             <div class="container-fluid">
+                <h3>Информация о контенте </h3>
                 <div class="row">
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-info">
@@ -32,11 +33,45 @@
                             <div class="icon"><i class="ion ion-bag"></i></div><a class="small-box-footer" href="#">Подробнее <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
+                    </div>
+                <h3>Пользователи </h3>
+                <div class="row">
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-warning">
+                            <div class="inner">
+                                <h3>{{\App\Models\User::all()->count()}}</h3>
+                                <p>Пользователи</p>
+                            </div>
+                            <div class="icon"><i class="ion ion-person-add"></i></div><a class="small-box-footer" href="#">Подробнее <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-warning">
+                            <div class="inner">
+                                <h3>{{\App\Models\User::where('created_at', '>=', Carbon\Carbon::now()->firstOfMonth()->toDateTimeString())->get()->count()}}</h3>
+                                <p>Новые пользователи</p>
+                            </div>
+                            <div class="icon"><i class="ion ion-person-add"></i></div><a class="small-box-footer" href="#">Подробнее <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-danger">
+                            <div class="inner">
+                                <h3>{{\App\Models\User::where('premium', true)->get()->count()}}</h3>
+                                <p>Премиум пользователи</p>
+                            </div>
+                            <div class="icon"><i class="ion ion-pie-graph"></i></div><a class="small-box-footer" href="#">Подробнее <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    </div>
+                <h3>Информация </h3>
+                <div class="row">
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-success">
                             <div class="inner">
                                 <h3>28000</h3>
-                                <p>Количество просмотров</p>
+                                <p>Просмотры</p>
                             </div>
                             <div class="icon"><i class="ion ion-stats-bars"></i></div><a class="small-box-footer" href="#">Подробнее <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
@@ -50,33 +85,7 @@
                             <div class="icon"><i class="ion ion:people-sharp"></i></div><a class="small-box-footer" href="#">Подробнее <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-6">
-                        <div class="small-box bg-warning">
-                            <div class="inner">
-                                <h3>{{\App\Models\User::where('created_at', '>=', Carbon\Carbon::now()->firstOfMonth()->toDateTimeString())->get()->count()}}</h3>
-                                <p>Новые пользователи</p>
-                            </div>
-                            <div class="icon"><i class="ion ion-person-add"></i></div><a class="small-box-footer" href="#">Подробнее <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-6">
-                        <div class="small-box bg-warning">
-                            <div class="inner">
-                                <h3>{{\App\Models\User::all()->count()}}</h3>
-                                <p>Пользователи</p>
-                            </div>
-                            <div class="icon"><i class="ion ion-person-add"></i></div><a class="small-box-footer" href="#">Подробнее <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-6">
-                        <div class="small-box bg-danger">
-                            <div class="inner">
-                                <h3>{{\App\Models\User::where('premium', true)->get()->count()}}</h3>
-                                <p>Премиум пользователи</p>
-                            </div>
-                            <div class="icon"><i class="ion ion-pie-graph"></i></div><a class="small-box-footer" href="#">Подробнее <i class="fas fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </section>

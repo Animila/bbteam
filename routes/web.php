@@ -72,6 +72,11 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
     Route::prefix('/users')->group(function () {
         Route::get('/', Admin\Users\UsersController::class)->name('users');
+        Route::get('/ban/{user}', Admin\Users\BanController::class)->name('users.ban');
+        Route::get('/unban/{user}', Admin\Users\UnBanController::class)->name('users.unban');
+        Route::get('/edit/{user}', Admin\Users\EditController::class)->name('users.edit');
+        Route::patch('/edit/{user}', Admin\Users\UpdateController::class)->name('users.update');
+        Route::patch('/password/{user}', Admin\Users\UpdatePasswordController::class)->name('users.password.update');
     });
 
 });

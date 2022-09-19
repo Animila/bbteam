@@ -25,10 +25,10 @@ class User extends Authenticatable
         'hide_18',
         'premium',
         'role',
+        'hide',
         'password',
         'created_at',
         'updated_at',
-        'deleted_at',
     ];
 
     use HasApiTokens, HasFactory, Notifiable;

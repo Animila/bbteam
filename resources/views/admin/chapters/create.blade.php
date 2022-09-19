@@ -24,8 +24,7 @@ date_default_timezone_set('Asia/Yakutsk');
         </div>
         <section class="content">
             <div class="container bg-dark p-2">
-{{--                action="{{route('chapter.store')}}" method="post"--}}
-                <form  enctype="multipart/form-data" id="parameters">
+                <form enctype="multipart/form-data" id="parameters">
                     @csrf
                     <div class="row">
                         <div class="col-12 col-sm-6">
