@@ -88,6 +88,15 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::delete('/{tag} ', Admin\Tags\DeleteController::class)->name('tags.delete');
     });
 
+    Route::prefix('/genres')->group(function () {
+        Route::get('/', Admin\Genres\GenresController::class)->name('genres');
+        Route::get('/create', Admin\Genres\CreateController::class)->name('genres.create');
+        Route::post('/', Admin\Genres\StoreController::class)->name('genres.store');
+        Route::get('/{genre}', Admin\Genres\EditController::class)->name('genres.edit');
+        Route::patch('/{genre} ', Admin\Genres\UpdateController::class)->name('genres.update');
+        Route::delete('/{genre} ', Admin\Genres\DeleteController::class)->name('genres.delete');
+    });
+
 });
 
 
