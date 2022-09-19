@@ -123,7 +123,7 @@
                         </form>
                     </div>
                     <div class="col-12 d-sm-none">
-                        <button class="btn btn-success" type="submit">Сохранить</button>
+                        <input class="btn btn-success" type="button" onclick="updateStatics()" value="Сохранить">
                     </div>
                     <div class="content mt-2 p-2">
                         <div class="row"><a class="btn btn-block btn-secondary" href="{{route('users')}}" type="button" style="width: 100px;">Назад</a></div>

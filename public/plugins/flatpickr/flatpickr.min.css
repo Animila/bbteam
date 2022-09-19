@@ -81,6 +81,18 @@
 .flatpickr-calendar.noCalendar.hasTime .flatpickr-time {
 	height: auto;
 }
+}.flatpickr-mobile:before {
+     color: #495057;
+     content: attr(placeholder) !important;
+     margin-right: 10px;
+ }
+.flatpickr-mobile:focus:before {
+    display: none;
+}
+
+input[type=hidden]:not([value=""]) + .flatpickr-mobile:before {
+    display: none;
+}
 .flatpickr-calendar:before,
 .flatpickr-calendar:after {
 	position: absolute;

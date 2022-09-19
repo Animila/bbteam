@@ -82,9 +82,14 @@ date_default_timezone_set('Asia/Yakutsk');
                                     <label class="custom-control-label" for="hide">Скрыть</label>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group d-none d-sm-block">
                                 <label>Время бесплатной публикации</label>
-                                <input class="form-control bg-black" type="datetime-local" placeholder="Выбрать" style="background: black;" name="date_of_free" value="{{$content['chapter']->date_of_free}}">
+                                <input class="form-control bg-black" type="datetime-local" placeholder="Выбрать" style="background: black; color: white;" name="date_of_free" value="{{$content['chapter']->date_of_free}}">
+                            </div>
+                            <div class="form-group d-block d-sm-none">
+                                <label>Время бесплатной публикации</label>
+                                <p>Дата: {{$content['chapter']->date_of_free}}</p>
+                                <input class="form-control bg-black flatpickr-mobile" type="datetime-local" placeholder="Выбрать" style="background: black; color: white;" name="date_of_free" value="">
                             </div>
                             <div class="col-12 d-sm-none">
                                 <button class="btn btn-success" type="submit">Сохранить</button>
@@ -139,7 +144,7 @@ date_default_timezone_set('Asia/Yakutsk');
                                     <form method="post" enctype="multipart/form-data" id="imageUpdate">
                                         @csrf
                                         <div class="input-group">
-                                            <input class="bg-dark" type="file" name="image" id="{{$scan->id}}" onchange="updateImage({{$scan->id}})">
+                                            <input class="bg-dark" type="file" name="image" id="{{$scan->id}}" onchange="updateImage({{$scan->id}}, 'web')">
                                         </div>
                                     </form>
                                 </th>
@@ -151,36 +156,85 @@ date_default_timezone_set('Asia/Yakutsk');
                                     </form>
                                 </th>
                             </tr>
-                            <script>
-                                function updateImage(id) {
-                                    let file = $('#'+id)[0].files[0];
-                                    let formData = new FormData();
-                                    formData.append("image", file);
-                                    formData.append("_method", 'PATCH');
-                                    axios.post('{{url('admin/chapters/scan')}}/'+id, formData, {
-                                        headers: {
-                                            'Content-Type': 'multipart/form-data',
-                                        },
-                                    }).then(responce => {
-                                        if(responce['data']['status']) {
-                                            location = "{{route('chapter.edit', $content['chapter']->id)}}"
-                                        }
-                                        if(!responce['data']['status']) {
-                                            alert(responce['data']['error'])
-                                        }
-                                    }).catch(error => {
-                                        console.log('Ошибка здесь: ' + error)
-                                    });
-                                }
-                            </script>
+                        @endforeach
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row mt-5 d-block d-sm-none w-100">
+                    <table class="table table-hover table-dark">
+                        <thead>
+                        <tr>
+                            <th class="col-1">Скан</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($content['chapter']->scans as $scan)
+                            <tr>
+                                <th>
+                                    <div class="w-100">
+                                        <img class="d-block mx-auto mb-3 w-50" src="{{asset($scan->url)}}">
+                                        <form method="post" enctype="multipart/form-data" id="imageUpdate">
+                                            @csrf
+                                            <div class="input-group">
+                                                <input class="bg-dark" type="file" name="image" id="mobile{{$scan->id}}" onchange="updateImage({{$scan->id}},'mobile')">
+                                            </div>
+{{--                                            <a onclick="updateImage({{$scan->id}}, 'mobile')" class="btn btn-outline-success m-2 mx-auto">Обновить</a>--}}
+                                        </form>
+
+                                    <div class="border mt-2 p-2">
+                                        <p class="mt-2"> Id: {{$scan->id}}</p>
+                                        <p class="mt-2"> Номер: {{$scan->number}}</p>
+                                        <form action="{{route('image.delete', $scan->id)}}" method="post" enctype="multipart/form-data">
+                                            @csrf
+                                            @method('delete')
+                                            Действия: <button class="btn" type="submit"><i class="fas fa-trash text-light"></i></button>
+                                        </form>
+                                    </div>
+                                    </div>
+                                </th>
+                            </tr>
 
                         @endforeach
 
                         </tbody>
                     </table>
                 </div>
+
             </div>
         </section>
+        <script>
+            function updateImage(id, status) {
+                let file = null
+                if (status == 'mobile'){
+                    console.log('моб')
+                    file = $('#mobile'+id)[0].files[0];
+                }
+                if (status =='web') {
+                    console.log('десктоп')
+                    file = $('#'+id)[0].files[0];
+                }
+                let formData = new FormData();
+                formData.append("image", file);
+                formData.append("_method", 'PATCH');
+                axios.post('{{url('admin/chapters/scan')}}/'+id, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }).then(responce => {
+                    if(responce['data']['status']) {
+                        location = "{{route('chapter.edit', $content['chapter']->id)}}"
+                    }
+                    if(!responce['data']['status']) {
+                        alert(responce['data']['error'])
+                    }
+                }).catch(error => {
+                    console.log('Ошибка здесь: ' + error)
+                });
+            }
+        </script>
+
     </div>
 @endsection
 
@@ -234,6 +288,7 @@ date_default_timezone_set('Asia/Yakutsk');
             time_24hr: true,
             "locale": "ru"
         })
+
 
     </script>
 @endsection

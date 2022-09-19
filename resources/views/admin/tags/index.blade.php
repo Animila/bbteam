@@ -34,6 +34,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="card-body table-responsive p-0">
                                     <table class="table table-nohover text-nowrap bg-dark">
                                         <thead>
@@ -47,7 +48,7 @@
                                         @foreach($content['tags'] as $tag)
                                             <tr>
                                                 <td>{{$tag->id}}</td>
-                                                <td>{{$tag->title}}</td>
+                                                <td >{{$tag->title}}</td>
 
                                                 <td class="d-flex justify-content-evenly">
                                                     <a class="btn nohover bg-dark" href="{{route('tags.edit', $tag->id)}}"><i class="fas fa-edit"></i></a>
@@ -62,6 +63,7 @@
                                         </tbody>
                                     </table>
                                 </div>
+
                             </div>
                         </div>
                     </div>
