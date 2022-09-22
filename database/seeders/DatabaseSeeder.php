@@ -335,11 +335,12 @@ class DatabaseSeeder extends Seeder
 //        Scans::factory()->count(20)->create();
 //        MangaGenre::factory()->count(10)->create()->unique();
 //        MangaTag::factory()->count(10)->create()->unique();
-//        User::create([
-//            'nickname'=>'animila',
-//            'name'=>'omega',
-//            'gender'=>'неизвестно',
-//            'email'=>'lol@ff.ru',
-//            'password'=>Hash::make('123')]);
+        User::create([
+            'nickname'=>'animila',
+            'name'=>'Илья',
+            'gender'=>'Мужской',
+            'role'=>'admin',
+            'email'=>'khristoforov-i@mail.ru',
+            'password'=>Hash::make('123')]);
     }
 }
